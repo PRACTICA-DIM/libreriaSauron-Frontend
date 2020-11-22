@@ -1,4 +1,114 @@
-# libreriaSauron-Frontend
+# **libreriaSauron-Frontend:** Cliente angular-oauth2-oidc
+
+Esta biblioteca le ayuda a implementar el cliente angular-oauth2-oidc en aplicaciones desarrolladas en Angular.
+
+## Instalación en angular:
+
+```
+npm i angular-oauth2-oidc-jwks --save
+```
+
+## Importar el NgModule:
+
+```
+import { HttpClientModule } from '@angular/common/http';
+import { OAuthModule } from 'angular-oauth2-oidc';
+// etc.
+ 
+@NgModule({
+  imports: [
+    // etc.
+    HttpClientModule,
+    OAuthModule.forRoot()
+  ],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    // etc.
+  ],
+  bootstrap: [
+    AppComponent
+  ]
+})
+export class AppModule {
+}
+
+```
+## Configurar el Logging
+
+```
+ import { AuthConfig } from 'angular-oauth2-oidc';
+ 
+  export const authCodeFlowConfig: AuthConfig = {
+    // Url del servidor de Sauron
+    issuer: 'https://idsvr4.azurewebsites.net',
+ 
+    // URL de la pagina de inicio a redirigir despues del login
+    redirectUri: window.location.origin + '/index.html',
+ 
+    // Id de cliente
+    clientId: 'spa',
+ 
+    // Secret del cliente si lo tuviera
+    dummyClientSecret: 'secret',
+ 
+    responseType: 'code',
+ 
+    // Para OIDC por defecto el scope son: openid profile email offline_access
+    // El token de refresco se consigue con offline_access
+    // api es un caso de uso específico
+    scope: 'openid profile email offline_access api',
+ 
+    showDebugInformation: true,
+  };
+```
+
+## Inicializar el codigo de autenticación en la API
+
+```
+this.oauthService.initCodeFlow();
+```
+
+## Logging out
+
+```
+this.oauthService.logOut();
+```
+
+## Revocar Token
+
+```
+this.oauthService.revokeTokenAndLogout();
+```
+
+## Llamada al back con access token
+
+```
+OAuthModule.forRoot({
+    resourceServer: {
+        allowedUrls: ['http://www.angular.at/api'],
+        sendAccessToken: true
+    }
+})
+```
+## Securización de rutas
+
+```
+const routes: Routes = [
+//Ejemplo de como utilizar las direcciones basadas en roles
+    {path: '', component: HomeComponent},
+    {path: 'lista', component: ListaComponent, canActivate: [FooGuard], data: {requiredRoles: ['admin', 'user']}},
+    {path: 'detail/:id', component: DetailComponent, canActivate: [FooGuard], data: {requiredRoles: ['admin', 'user']}},
+    {path: 'update/:id', component: UpdateComponent, canActivate: [FooGuard], data: {requiredRoles: ['admin']}},
+    {path: 'create', component: CreateComponent, canActivate: [FooGuard], data: {requiredRoles: ['admin']}},
+    {path: '**', redirectTo: '', pathMatch: 'full'}
+];
+```
+<br>
+<br>
+<br>
+
+# **libreriaSauron-Frontend:** Cliente Keycloak-angular y keycloak-js
 
 Esta biblioteca le ayuda a implementar el cliente Keycloak-angular y keycloak-js en aplicaciones desarrolladas en Angular.
 
@@ -102,3 +212,4 @@ export class AuthGuard extends KeycloakAuthGuard {
   }
 }
 ```
+
